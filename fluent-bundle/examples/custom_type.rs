@@ -10,7 +10,7 @@
 //
 // The type and its options are modelled after ECMA402 Intl.DateTimeFormat.
 use intl_memoizer::Memoizable;
-use unic_langid::LanguageIdentifier;
+use icu::locid::Locale;
 
 use fluent_bundle::types::FluentType;
 use fluent_bundle::{FluentArgs, FluentBundle, FluentResource, FluentValue};
@@ -123,12 +123,12 @@ impl FluentType for DateTime {
 /// Formatter
 
 struct DateTimeFormatter {
-    lang: LanguageIdentifier,
+    lang: Locale,
     options: DateTimeOptions,
 }
 
 impl DateTimeFormatter {
-    pub fn new(lang: LanguageIdentifier, options: DateTimeOptions) -> Result<Self, ()> {
+    pub fn new(lang: Locale, options: DateTimeOptions) -> Result<Self, ()> {
         Ok(Self { lang, options })
     }
 
@@ -143,7 +143,7 @@ impl DateTimeFormatter {
 impl Memoizable for DateTimeFormatter {
     type Args = (DateTimeOptions,);
     type Error = ();
-    fn construct(lang: LanguageIdentifier, args: Self::Args) -> Result<Self, Self::Error> {
+    fn construct(lang: Locale, args: Self::Args) -> Result<Self, Self::Error> {
         Self::new(lang, args.0)
     }
 }
@@ -158,7 +158,7 @@ key-date = Today is { DATETIME($epoch, dateStyle: "long", timeStyle: "short") }
     );
     let res = FluentResource::try_new(ftl_string).expect("Could not parse an FTL string.");
 
-    let lang: LanguageIdentifier = "en".parse().unwrap();
+    let lang: Locale = "en".parse().unwrap();
     let mut bundle = FluentBundle::new(vec![lang]);
     bundle
         .add_resource(res)

@@ -13,7 +13,7 @@
 //! are available. The list should also be sorted according to the user
 //! preference, as the order is significant for how [`Localization`](crate::Localization) performs
 //! fallbacking.
-use unic_langid::LanguageIdentifier;
+use icu::locid::Locale;
 
 /// A trait used to provide a selection of locales to be used by the
 /// [`Localization`](crate::Localization) instance for runtime
@@ -23,7 +23,7 @@ use unic_langid::LanguageIdentifier;
 /// ```
 /// use fluent_fallback::{Localization, env::LocalesProvider};
 /// use fluent_resmgr::ResourceManager;
-/// use unic_langid::LanguageIdentifier;
+/// use icu::locid::Locale;
 /// use std::{
 ///     rc::Rc,
 ///     cell::RefCell
@@ -31,15 +31,15 @@ use unic_langid::LanguageIdentifier;
 ///
 /// #[derive(Clone)]
 /// struct Env {
-///     locales: Rc<RefCell<Vec<LanguageIdentifier>>>,
+///     locales: Rc<RefCell<Vec<Locale>>>,
 /// }
 ///
 /// impl Env {
-///     pub fn new(locales: Vec<LanguageIdentifier>) -> Self {
+///     pub fn new(locales: Vec<Locale>) -> Self {
 ///         Self { locales: Rc::new(RefCell::new(locales)) }
 ///     }
 ///
-///     pub fn set_locales(&mut self, new_locales: Vec<LanguageIdentifier>) {
+///     pub fn set_locales(&mut self, new_locales: Vec<Locale>) {
 ///         let mut locales = self.locales.borrow_mut();
 ///         locales.clear();
 ///         locales.extend(new_locales);
@@ -47,7 +47,7 @@ use unic_langid::LanguageIdentifier;
 /// }
 ///
 /// impl LocalesProvider for Env {
-///     type Iter = <Vec<LanguageIdentifier> as IntoIterator>::IntoIter;
+///     type Iter = <Vec<Locale> as IntoIterator>::IntoIter;
 ///     fn locales(&self) -> Self::Iter {
 ///         self.locales.borrow().clone().into_iter()
 ///     }
@@ -72,12 +72,12 @@ use unic_langid::LanguageIdentifier;
 /// // fallback on `en-GB`.
 /// ```
 pub trait LocalesProvider {
-    type Iter: Iterator<Item = LanguageIdentifier>;
+    type Iter: Iterator<Item = Locale>;
     fn locales(&self) -> Self::Iter;
 }
 
-impl LocalesProvider for Vec<LanguageIdentifier> {
-    type Iter = <Vec<LanguageIdentifier> as IntoIterator>::IntoIter;
+impl LocalesProvider for Vec<Locale> {
+    type Iter = <Vec<Locale> as IntoIterator>::IntoIter;
     fn locales(&self) -> Self::Iter {
         self.clone().into_iter()
     }

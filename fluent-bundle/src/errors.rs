@@ -33,7 +33,7 @@ pub enum FluentError {
     ///
     /// ```
     /// use fluent_bundle::{FluentBundle, FluentResource};
-    /// use unic_langid::langid;
+    /// use icu::locid::locale;
     ///
     /// let ftl_string = String::from("intro = Welcome, { $name }.");
     /// let res1 = FluentResource::try_new(ftl_string)
@@ -43,8 +43,8 @@ pub enum FluentError {
     /// let res2 = FluentResource::try_new(ftl_string)
     ///     .expect("Could not parse an FTL string.");
     ///
-    /// let langid_en = langid!("en-US");
-    /// let mut bundle = FluentBundle::new(vec![langid_en]);
+    /// let locale_en = locale!("en-US");
+    /// let mut bundle = FluentBundle::new(vec![locale_en]);
     ///
     /// bundle.add_resource(&res1)
     ///     .expect("Failed to add FTL resources to the bundle.");

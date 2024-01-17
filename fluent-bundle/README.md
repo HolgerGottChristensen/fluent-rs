@@ -23,15 +23,15 @@ Usage
 
 ```rust
 use fluent_bundle::{FluentBundle, FluentResource};
-use unic_langid::langid;
+use icu::locid::locale;
 
 fn main() {
     let ftl_string = "hello-world = Hello, world!".to_owned();
     let res = FluentResource::try_new(ftl_string)
         .expect("Could not parse an FTL string.");
 
-    let langid_en = langid!("en");
-    let mut bundle = FluentBundle::new(vec![langid_en]);
+    let locale_en = locale!("en");
+    let mut bundle = FluentBundle::new(vec![locale_en]);
 
     bundle.add_resource(&res)
         .expect("Failed to add FTL resources to the bundle.");

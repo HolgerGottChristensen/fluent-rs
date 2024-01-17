@@ -26,7 +26,7 @@ use std::io;
 use std::io::prelude::*;
 use std::path::Path;
 use std::str::FromStr;
-use unic_langid::{langid, LanguageIdentifier};
+use icu::locid::{locale, Locale};
 
 /// We need a generic file read helper function to
 /// read the localization resource file.
@@ -46,7 +46,7 @@ fn read_file(path: &Path) -> Result<String, io::Error> {
 ///
 /// It is expected that every directory inside it
 /// has a name that is a valid BCP47 language tag.
-fn get_available_locales() -> Result<Vec<LanguageIdentifier>, io::Error> {
+fn get_available_locales() -> Result<Vec<Locale>, io::Error> {
     let mut locales = vec![];
 
     let mut dir = env::current_dir()?;
@@ -62,8 +62,8 @@ fn get_available_locales() -> Result<Vec<LanguageIdentifier>, io::Error> {
             if path.is_dir() {
                 if let Some(name) = path.file_name() {
                     if let Some(name) = name.to_str() {
-                        let langid = name.parse().expect("Parsing failed.");
-                        locales.push(langid);
+                        let locale = name.parse().expect("Parsing failed.");
+                        locales.push(locale);
                     }
                 }
             }
@@ -76,96 +76,96 @@ static L10N_RESOURCES: &[&str] = &["simple.ftl"];
 
 fn main() {
     // 1. Get the command line arguments.
-    let args: Vec<String> = env::args().collect();
-
-    // 3. If the argument length is more than 1,
-    //    take the second argument as a comma-separated
-    //    list of requested locales.
-    let requested = args.get(2).map_or(vec![], |arg| {
-        arg.split(',')
-            .map(|s| -> LanguageIdentifier { s.parse().expect("Parsing locale failed.") })
-            .collect()
-    });
-
-    // 4. Negotiate it against the available ones
-    let default_locale = langid!("en-US");
-    let available = get_available_locales().expect("Retrieving available locales failed.");
-    let resolved_locales = negotiate_languages(
-        &requested,
-        &available,
-        Some(&default_locale),
-        NegotiationStrategy::Filtering,
-    );
-    let current_locale = resolved_locales
-        .get(0)
-        .cloned()
-        .expect("At least one locale should match.");
-
-    // 5. Create a new Fluent FluentBundle using the
-    //    resolved locales.
-    let mut bundle = FluentBundle::new(resolved_locales.into_iter().cloned().collect());
-
-    // 6. Load the localization resource
-    for path in L10N_RESOURCES {
-        let mut full_path = env::current_dir().expect("Failed to retireve current dir.");
-        if full_path.to_string_lossy().ends_with("fluent-rs") {
-            full_path.push("fluent-bundle");
-        }
-        full_path.push("examples");
-        full_path.push("resources");
-        full_path.push(current_locale.to_string());
-        full_path.push(path);
-        let source = read_file(&full_path).expect("Failed to read file.");
-        let resource = FluentResource::try_new(source).expect("Could not parse an FTL string.");
-        bundle
-            .add_resource(resource)
-            .expect("Failed to add FTL resources to the bundle.");
-    }
-
-    // 7. Check if the input is provided.
-    match args.get(1) {
-        Some(input) => {
-            // 7.1. Cast it to a number.
-            match isize::from_str(input) {
-                Ok(i) => {
-                    // 7.2. Construct a map of arguments
-                    //      to format the message.
-                    let mut args = FluentArgs::new();
-                    args.set("input", FluentValue::from(i));
-                    args.set("value", FluentValue::from(collatz(i)));
-                    // 7.3. Format the message.
-                    let mut errors = vec![];
-                    let msg = bundle
-                        .get_message("response-msg")
-                        .expect("Message doesn't exist.");
-                    let pattern = msg.value().expect("Message has no value.");
-                    let value = bundle.format_pattern(pattern, Some(&args), &mut errors);
-                    println!("{}", value);
-                }
-                Err(err) => {
-                    let mut args = FluentArgs::new();
-                    args.set("input", FluentValue::from(input.as_str()));
-                    args.set("reason", FluentValue::from(err.to_string()));
-                    let mut errors = vec![];
-                    let msg = bundle
-                        .get_message("input-parse-error")
-                        .expect("Message doesn't exist.");
-                    let pattern = msg.value().expect("Message has no value.");
-                    let value = bundle.format_pattern(pattern, Some(&args), &mut errors);
-                    println!("{}", value);
-                }
-            }
-        }
-        None => {
-            let mut errors = vec![];
-            let msg = bundle
-                .get_message("missing-arg-error")
-                .expect("Message doesn't exist.");
-            let pattern = msg.value().expect("Message has no value.");
-            let value = bundle.format_pattern(pattern, None, &mut errors);
-            println!("{}", value);
-        }
-    }
+    // let args: Vec<String> = env::args().collect();
+    //
+    // // 3. If the argument length is more than 1,
+    // //    take the second argument as a comma-separated
+    // //    list of requested locales.
+    // let requested = args.get(2).map_or(vec![], |arg| {
+    //     arg.split(',')
+    //         .map(|s| -> Locale { s.parse().expect("Parsing locale failed.") })
+    //         .collect()
+    // });
+    //
+    // // 4. Negotiate it against the available ones
+    // let default_locale = locale!("en-US");
+    // let available = get_available_locales().expect("Retrieving available locales failed.");
+    // let resolved_locales = negotiate_languages(
+    //     &requested,
+    //     &available,
+    //     Some(&default_locale),
+    //     NegotiationStrategy::Filtering,
+    // );
+    // let current_locale = resolved_locales
+    //     .get(0)
+    //     .cloned()
+    //     .expect("At least one locale should match.");
+    //
+    // // 5. Create a new Fluent FluentBundle using the
+    // //    resolved locales.
+    // let mut bundle = FluentBundle::new(resolved_locales.into_iter().cloned().collect());
+    //
+    // // 6. Load the localization resource
+    // for path in L10N_RESOURCES {
+    //     let mut full_path = env::current_dir().expect("Failed to retireve current dir.");
+    //     if full_path.to_string_lossy().ends_with("fluent-rs") {
+    //         full_path.push("fluent-bundle");
+    //     }
+    //     full_path.push("examples");
+    //     full_path.push("resources");
+    //     full_path.push(current_locale.to_string());
+    //     full_path.push(path);
+    //     let source = read_file(&full_path).expect("Failed to read file.");
+    //     let resource = FluentResource::try_new(source).expect("Could not parse an FTL string.");
+    //     bundle
+    //         .add_resource(resource)
+    //         .expect("Failed to add FTL resources to the bundle.");
+    // }
+    //
+    // // 7. Check if the input is provided.
+    // match args.get(1) {
+    //     Some(input) => {
+    //         // 7.1. Cast it to a number.
+    //         match isize::from_str(input) {
+    //             Ok(i) => {
+    //                 // 7.2. Construct a map of arguments
+    //                 //      to format the message.
+    //                 let mut args = FluentArgs::new();
+    //                 args.set("input", FluentValue::from(i));
+    //                 args.set("value", FluentValue::from(collatz(i)));
+    //                 // 7.3. Format the message.
+    //                 let mut errors = vec![];
+    //                 let msg = bundle
+    //                     .get_message("response-msg")
+    //                     .expect("Message doesn't exist.");
+    //                 let pattern = msg.value().expect("Message has no value.");
+    //                 let value = bundle.format_pattern(pattern, Some(&args), &mut errors);
+    //                 println!("{}", value);
+    //             }
+    //             Err(err) => {
+    //                 let mut args = FluentArgs::new();
+    //                 args.set("input", FluentValue::from(input.as_str()));
+    //                 args.set("reason", FluentValue::from(err.to_string()));
+    //                 let mut errors = vec![];
+    //                 let msg = bundle
+    //                     .get_message("input-parse-error")
+    //                     .expect("Message doesn't exist.");
+    //                 let pattern = msg.value().expect("Message has no value.");
+    //                 let value = bundle.format_pattern(pattern, Some(&args), &mut errors);
+    //                 println!("{}", value);
+    //             }
+    //         }
+    //     }
+    //     None => {
+    //         let mut errors = vec![];
+    //         let msg = bundle
+    //             .get_message("missing-arg-error")
+    //             .expect("Message doesn't exist.");
+    //         let pattern = msg.value().expect("Message has no value.");
+    //         let value = bundle.format_pattern(pattern, None, &mut errors);
+    //         println!("{}", value);
+    //     }
+    // }
 }
 
 /// Collatz conjecture calculating function.

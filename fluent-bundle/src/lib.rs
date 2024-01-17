@@ -18,7 +18,7 @@
 //! ```
 //! use fluent_bundle::{FluentBundle, FluentValue, FluentResource, FluentArgs};
 //! // Used to provide a locale for the bundle.
-//! use unic_langid::langid;
+//! use icu::locid::locale;
 //!
 //! // 1. Crate a FluentResource
 //!
@@ -35,8 +35,8 @@
 //!
 //! // 2. Crate a FluentBundle
 //!
-//! let langid_en = langid!("en-US");
-//! let mut bundle = FluentBundle::new(vec![langid_en]);
+//! let locale_en = locale!("en-US");
+//! let mut bundle = FluentBundle::new(vec![locale_en]);
 //!
 //!
 //! // 3. Add the resource to the bundle

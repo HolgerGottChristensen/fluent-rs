@@ -1,8 +1,8 @@
 use fluent_bundle::{FluentArgs, FluentBundle, FluentResource, FluentValue};
 use fluent_syntax::ast;
-use unic_langid::{langid, LanguageIdentifier};
+use icu::locid::{locale, Locale};
 
-const LANG_EN: LanguageIdentifier = langid!("en");
+const LANG_EN: Locale = locale!("en");
 
 fn add_functions<R>(name: &'static str, bundle: &mut FluentBundle<R>) {
     match name {

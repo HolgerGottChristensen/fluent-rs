@@ -9,7 +9,7 @@ use rustc_hash::FxHashSet;
 use std::io;
 use std::{fs, iter};
 use thiserror::Error;
-use unic_langid::LanguageIdentifier;
+use icu::locid::Locale;
 
 fn read_file(path: &str) -> Result<String, io::Error> {
     fs::read_to_string(path)
@@ -75,7 +75,7 @@ impl ResourceManager {
     /// to other locales.
     pub fn get_bundle(
         &self,
-        locales: Vec<LanguageIdentifier>,
+        locales: Vec<Locale>,
         resource_ids: Vec<String>,
     ) -> Result<FluentBundle<&FluentResource>, Vec<ResourceManagerError>> {
         let mut errors: Vec<ResourceManagerError> = vec![];
@@ -108,7 +108,7 @@ impl ResourceManager {
     /// unlike `get_bundle` and only use the single locale of the bundle.
     pub fn get_bundles(
         &self,
-        locales: Vec<LanguageIdentifier>,
+        locales: Vec<Locale>,
         resource_ids: Vec<String>,
     ) -> impl Iterator<Item = Result<FluentBundle<&FluentResource>, Vec<ResourceManagerError>>>
     {
@@ -158,7 +158,7 @@ pub enum ResourceManagerError {
 // Due to limitation of trait, we need a nameable Iterator type.  Due to the
 // lack of GATs, these have to own members instead of taking slices.
 pub struct BundleIter {
-    locales: <Vec<LanguageIdentifier> as IntoIterator>::IntoIter,
+    locales: <Vec<Locale> as IntoIterator>::IntoIter,
     res_ids: FxHashSet<ResourceId>,
 }
 
@@ -197,7 +197,7 @@ impl Stream for BundleIter {
 
 impl BundleGenerator for ResourceManager {
     type Resource = FluentResource;
-    type LocalesIter = std::vec::IntoIter<LanguageIdentifier>;
+    type LocalesIter = std::vec::IntoIter<Locale>;
     type Iter = BundleIter;
     type Stream = BundleIter;
 
@@ -222,18 +222,18 @@ impl BundleGenerator for ResourceManager {
 #[cfg(test)]
 mod test {
     use super::*;
-    use unic_langid::langid;
+    use icu::locid::locale;
 
     #[test]
     fn caching() {
         let res_mgr = ResourceManager::new("./tests/resources/{locale}/{res_id}".into());
 
-        let _bundle = res_mgr.get_bundle(vec![langid!("en-US")], vec!["test.ftl".into()]);
+        let _bundle = res_mgr.get_bundle(vec![locale!("en-US")], vec!["test.ftl".into()]);
         let res_1 = res_mgr
             .get_resource("test.ftl", "en-US")
             .expect("Could not get resource");
 
-        let _bundle2 = res_mgr.get_bundle(vec![langid!("en-US")], vec!["test.ftl".into()]);
+        let _bundle2 = res_mgr.get_bundle(vec![locale!("en-US")], vec!["test.ftl".into()]);
         let res_2 = res_mgr
             .get_resource("test.ftl", "en-US")
             .expect("Could not get resource");
@@ -248,7 +248,7 @@ mod test {
     fn get_resource_error() {
         let res_mgr = ResourceManager::new("./tests/resources/{locale}/{res_id}".into());
 
-        let _bundle = res_mgr.get_bundle(vec![langid!("en-US")], vec!["test.ftl".into()]);
+        let _bundle = res_mgr.get_bundle(vec![locale!("en-US")], vec!["test.ftl".into()]);
         let res = res_mgr.get_resource("nonexistent.ftl", "en-US");
 
         assert!(res.is_err());
@@ -257,7 +257,7 @@ mod test {
     #[test]
     fn get_bundle_error() {
         let res_mgr = ResourceManager::new("./tests/resources/{locale}/{res_id}".into());
-        let bundle = res_mgr.get_bundle(vec![langid!("en-US")], vec!["nonexistent.ftl".into()]);
+        let bundle = res_mgr.get_bundle(vec![locale!("en-US")], vec!["nonexistent.ftl".into()]);
 
         assert!(bundle.is_err());
     }
@@ -270,7 +270,7 @@ mod test {
         let res_mgr = ResourceManager::new("./tests/resources/{locale}/{res_id}".into());
         let bundle = res_mgr
             .get_bundle(
-                vec![langid!("en-US")],
+                vec![locale!("en-US")],
                 vec!["test.ftl".into(), "invalid.ftl".into()],
             )
             .expect("Could not retrieve bundle");

@@ -14,14 +14,14 @@ use fluent_fallback::{
 use rustc_hash::FxHashSet;
 use std::cell::RefCell;
 use std::rc::Rc;
-use unic_langid::{langid, LanguageIdentifier};
+use icu::locid::{locale, Locale};
 
 struct InnerLocales {
-    locales: RefCell<Vec<LanguageIdentifier>>,
+    locales: RefCell<Vec<Locale>>,
 }
 
 impl InnerLocales {
-    pub fn insert(&self, index: usize, element: LanguageIdentifier) {
+    pub fn insert(&self, index: usize, element: Locale) {
         self.locales.borrow_mut().insert(index, element);
     }
 }
@@ -32,7 +32,7 @@ struct Locales {
 }
 
 impl Locales {
-    pub fn new(locales: Vec<LanguageIdentifier>) -> Self {
+    pub fn new(locales: Vec<Locale>) -> Self {
         Self {
             inner: Rc::new(InnerLocales {
                 locales: RefCell::new(locales),
@@ -40,13 +40,13 @@ impl Locales {
         }
     }
 
-    pub fn insert(&mut self, index: usize, element: LanguageIdentifier) {
+    pub fn insert(&mut self, index: usize, element: Locale) {
         self.inner.insert(index, element);
     }
 }
 
 impl LocalesProvider for Locales {
-    type Iter = <Vec<LanguageIdentifier> as IntoIterator>::IntoIter;
+    type Iter = <Vec<Locale> as IntoIterator>::IntoIter;
     fn locales(&self) -> Self::Iter {
         self.inner.locales.borrow().clone().into_iter()
     }
@@ -55,7 +55,7 @@ impl LocalesProvider for Locales {
 // Due to limitation of trait, we need a nameable Iterator type.  Due to the
 // lack of GATs, these have to own members instead of taking slices.
 struct BundleIter {
-    locales: <Vec<LanguageIdentifier> as IntoIterator>::IntoIter,
+    locales: <Vec<Locale> as IntoIterator>::IntoIter,
     res_ids: FxHashSet<ResourceId>,
 }
 
@@ -129,7 +129,7 @@ struct ResourceManager;
 
 impl BundleGenerator for ResourceManager {
     type Resource = FluentResource;
-    type LocalesIter = std::vec::IntoIter<LanguageIdentifier>;
+    type LocalesIter = std::vec::IntoIter<Locale>;
     type Iter = BundleIter;
     type Stream = BundleIter;
 
@@ -153,7 +153,7 @@ impl BundleGenerator for ResourceManager {
 #[test]
 fn localization_format() {
     let resource_ids: Vec<ResourceId> = vec!["test.ftl".into(), "test2.ftl".into()];
-    let locales = Locales::new(vec![langid!("pl"), langid!("en-US")]);
+    let locales = Locales::new(vec![locale!("pl"), locale!("en-US")]);
     let res_mgr = ResourceManager;
     let mut errors = vec![];
 
@@ -182,7 +182,7 @@ fn localization_format() {
 fn localization_on_change() {
     let resource_ids: Vec<ResourceId> = vec!["test.ftl".into(), "test2.ftl".into()];
 
-    let mut locales = Locales::new(vec![langid!("en-US")]);
+    let mut locales = Locales::new(vec![locale!("en-US")]);
     let res_mgr = ResourceManager;
     let mut errors = vec![];
 
@@ -194,7 +194,7 @@ fn localization_on_change() {
         .unwrap();
     assert_eq!(value, Some(Cow::Borrowed("Hello World [en]")));
 
-    locales.insert(0, langid!("pl"));
+    locales.insert(0, locale!("pl"));
     loc.on_change();
 
     let bundles = loc.bundles();
@@ -208,7 +208,7 @@ fn localization_on_change() {
 fn localization_format_value_missing_errors() {
     let resource_ids: Vec<ResourceId> = vec!["test.ftl".into(), "test2.ftl".into()];
 
-    let locales = Locales::new(vec![langid!("pl"), langid!("en-US")]);
+    let locales = Locales::new(vec![locale!("pl"), locale!("en-US")]);
     let res_mgr = ResourceManager;
     let mut errors = vec![];
 
@@ -223,11 +223,11 @@ fn localization_format_value_missing_errors() {
         vec![
             LocalizationError::MissingMessage {
                 id: "missing-message".to_string(),
-                locale: Some(langid!("pl"))
+                locale: Some(locale!("pl"))
             },
             LocalizationError::MissingMessage {
                 id: "missing-message".to_string(),
-                locale: Some(langid!("en-US"))
+                locale: Some(locale!("en-US"))
             },
             LocalizationError::MissingMessage {
                 id: "missing-message".to_string(),
@@ -246,11 +246,11 @@ fn localization_format_value_missing_errors() {
         vec![
             LocalizationError::MissingValue {
                 id: "message-3".to_string(),
-                locale: Some(langid!("pl"))
+                locale: Some(locale!("pl"))
             },
             LocalizationError::MissingValue {
                 id: "message-3".to_string(),
-                locale: Some(langid!("en-US"))
+                locale: Some(locale!("en-US"))
             },
             LocalizationError::MissingValue {
                 id: "message-3".to_string(),
@@ -264,7 +264,7 @@ fn localization_format_value_missing_errors() {
 fn localization_format_value_sync_missing_errors() {
     let resource_ids: Vec<ResourceId> = vec!["test.ftl".into(), "test2.ftl".into()];
 
-    let locales = Locales::new(vec![langid!("pl"), langid!("en-US")]);
+    let locales = Locales::new(vec![locale!("pl"), locale!("en-US")]);
     let res_mgr = ResourceManager;
     let mut errors = vec![];
 
@@ -279,11 +279,11 @@ fn localization_format_value_sync_missing_errors() {
         vec![
             LocalizationError::MissingMessage {
                 id: "missing-message".to_string(),
-                locale: Some(langid!("pl"))
+                locale: Some(locale!("pl"))
             },
             LocalizationError::MissingMessage {
                 id: "missing-message".to_string(),
-                locale: Some(langid!("en-US"))
+                locale: Some(locale!("en-US"))
             },
             LocalizationError::MissingMessage {
                 id: "missing-message".to_string(),
@@ -302,11 +302,11 @@ fn localization_format_value_sync_missing_errors() {
         vec![
             LocalizationError::MissingValue {
                 id: "message-3".to_string(),
-                locale: Some(langid!("pl"))
+                locale: Some(locale!("pl"))
             },
             LocalizationError::MissingValue {
                 id: "message-3".to_string(),
-                locale: Some(langid!("en-US"))
+                locale: Some(locale!("en-US"))
             },
             LocalizationError::MissingValue {
                 id: "message-3".to_string(),
@@ -320,7 +320,7 @@ fn localization_format_value_sync_missing_errors() {
 fn localization_format_values_sync_missing_errors() {
     let resource_ids: Vec<ResourceId> = vec!["test.ftl".into(), "test2.ftl".into()];
 
-    let locales = Locales::new(vec![langid!("pl"), langid!("en-US")]);
+    let locales = Locales::new(vec![locale!("pl"), locale!("en-US")]);
     let res_mgr = ResourceManager;
     let mut errors = vec![];
 
@@ -338,19 +338,19 @@ fn localization_format_values_sync_missing_errors() {
         vec![
             LocalizationError::MissingMessage {
                 id: "missing-message".to_string(),
-                locale: Some(langid!("pl"))
+                locale: Some(locale!("pl"))
             },
             LocalizationError::MissingMessage {
                 id: "missing-message-2".to_string(),
-                locale: Some(langid!("pl"))
+                locale: Some(locale!("pl"))
             },
             LocalizationError::MissingMessage {
                 id: "missing-message".to_string(),
-                locale: Some(langid!("en-US"))
+                locale: Some(locale!("en-US"))
             },
             LocalizationError::MissingMessage {
                 id: "missing-message-2".to_string(),
-                locale: Some(langid!("en-US"))
+                locale: Some(locale!("en-US"))
             },
             LocalizationError::MissingMessage {
                 id: "missing-message".to_string(),
@@ -373,11 +373,11 @@ fn localization_format_values_sync_missing_errors() {
         vec![
             LocalizationError::MissingValue {
                 id: "message-3".to_string(),
-                locale: Some(langid!("pl"))
+                locale: Some(locale!("pl"))
             },
             LocalizationError::MissingValue {
                 id: "message-3".to_string(),
-                locale: Some(langid!("en-US"))
+                locale: Some(locale!("en-US"))
             },
             LocalizationError::MissingValue {
                 id: "message-3".to_string(),
@@ -391,7 +391,7 @@ fn localization_format_values_sync_missing_errors() {
 fn localization_format_messages_sync_missing_errors() {
     let resource_ids: Vec<ResourceId> = vec!["test.ftl".into(), "test2.ftl".into()];
 
-    let locales = Locales::new(vec![langid!("pl"), langid!("en-US")]);
+    let locales = Locales::new(vec![locale!("pl"), locale!("en-US")]);
     let res_mgr = ResourceManager;
     let mut errors = vec![];
 
@@ -409,19 +409,19 @@ fn localization_format_messages_sync_missing_errors() {
         vec![
             LocalizationError::MissingMessage {
                 id: "missing-message".to_string(),
-                locale: Some(langid!("pl"))
+                locale: Some(locale!("pl"))
             },
             LocalizationError::MissingMessage {
                 id: "missing-message-2".to_string(),
-                locale: Some(langid!("pl"))
+                locale: Some(locale!("pl"))
             },
             LocalizationError::MissingMessage {
                 id: "missing-message".to_string(),
-                locale: Some(langid!("en-US"))
+                locale: Some(locale!("en-US"))
             },
             LocalizationError::MissingMessage {
                 id: "missing-message-2".to_string(),
-                locale: Some(langid!("en-US"))
+                locale: Some(locale!("en-US"))
             },
             LocalizationError::MissingMessage {
                 id: "missing-message".to_string(),
@@ -438,7 +438,7 @@ fn localization_format_messages_sync_missing_errors() {
 #[test]
 fn localization_format_missing_argument_error() {
     let resource_ids: Vec<ResourceId> = vec!["test2.ftl".into()];
-    let locales = Locales::new(vec![langid!("en-US")]);
+    let locales = Locales::new(vec![locale!("en-US")]);
     let res_mgr = ResourceManager;
     let mut errors = vec![];
 
@@ -472,7 +472,7 @@ fn localization_format_missing_argument_error() {
         errors,
         vec![LocalizationError::Resolver {
             id: "message-4".to_string(),
-            locale: langid!("en-US"),
+            locale: locale!("en-US"),
             errors: vec![FluentError::ResolverError(ResolverError::Reference(
                 ReferenceKind::Variable {
                     id: "userName".to_string(),
@@ -485,7 +485,7 @@ fn localization_format_missing_argument_error() {
 #[tokio::test]
 async fn localization_handle_state_changes_mid_async() {
     let resource_ids: Vec<ResourceId> = vec!["test.ftl".into()];
-    let locales = Locales::new(vec![langid!("en-US")]);
+    let locales = Locales::new(vec![locale!("en-US")]);
     let res_mgr = ResourceManager;
     let mut errors = vec![];
 
@@ -502,7 +502,7 @@ async fn localization_handle_state_changes_mid_async() {
 fn localization_duplicate_resources() {
     let resource_ids: Vec<ResourceId> =
         vec!["test.ftl".into(), "test2.ftl".into(), "test2.ftl".into()];
-    let locales = Locales::new(vec![langid!("pl"), langid!("en-US")]);
+    let locales = Locales::new(vec![locale!("pl"), locale!("en-US")]);
     let res_mgr = ResourceManager;
     let mut errors = vec![];
 

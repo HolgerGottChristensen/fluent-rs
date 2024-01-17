@@ -1,14 +1,12 @@
 [package]
-name = "fluent"
+name = "fluent-langneg"
 description = """
-A localization system designed to unleash the entire expressive power of
-natural language translations.
+A library for language and locale negotiation.
 """
-version = "0.16.0"
+version = "0.13.0"
 edition = "2021"
 authors = [
-    "Zibi Braniecki <gandalf@mozilla.com>",
-    "Staś Małolepszy <stas@mozilla.com>"
+    "Zibi Braniecki <gandalf@mozilla.com>"
 ]
 homepage = "http://www.projectfluent.org"
 license = "Apache-2.0/MIT"
@@ -26,6 +24,4 @@ include = [
 ]
 
 [dependencies]
-fluent-bundle.workspace = true
-fluent-pseudo = { workspace = true, optional = true }
 icu.workspace = true

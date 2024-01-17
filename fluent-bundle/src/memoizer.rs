@@ -1,11 +1,11 @@
 use crate::types::FluentType;
 use intl_memoizer::Memoizable;
-use unic_langid::LanguageIdentifier;
+use icu::locid::Locale;
 
 /// This trait contains thread-safe methods which extend [intl_memoizer::IntlLangMemoizer].
 /// It is used as the generic bound in this crate when a memoizer is needed.
 pub trait MemoizerKind: 'static {
-    fn new(lang: LanguageIdentifier) -> Self
+    fn new(lang: Locale) -> Self
     where
         Self: Sized;
 
@@ -27,4 +27,6 @@ pub trait MemoizerKind: 'static {
 
     /// Wires up the `as_string` or `as_string_threadsafe` variants for [`FluentType`].
     fn stringify_value(&self, value: &dyn FluentType) -> std::borrow::Cow<'static, str>;
+
+    fn language(&self) -> &Locale;
 }

@@ -4,7 +4,7 @@
 to intl formatters.
 
 The assumption is that allocating a new formatter instance is costly, and such
-instance is read-only during its life time, with constructor being expensive, and
+instance is read-only during its lifetime, with constructor being expensive, and
 `format`/`select` calls being cheap.
 
 In result it pays off to use a singleton to manage memoization of all instances of intl

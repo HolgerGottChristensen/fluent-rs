@@ -1,6 +1,6 @@
 use fluent_bundle::FluentError;
 use std::error::Error;
-use unic_langid::LanguageIdentifier;
+use icu::locid::Locale;
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum LocalizationError {
@@ -9,16 +9,16 @@ pub enum LocalizationError {
     },
     Resolver {
         id: String,
-        locale: LanguageIdentifier,
+        locale: Locale,
         errors: Vec<FluentError>,
     },
     MissingMessage {
         id: String,
-        locale: Option<LanguageIdentifier>,
+        locale: Option<Locale>,
     },
     MissingValue {
         id: String,
-        locale: Option<LanguageIdentifier>,
+        locale: Option<Locale>,
     },
     SyncRequestInAsyncMode,
 }

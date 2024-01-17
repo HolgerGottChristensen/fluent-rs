@@ -13,7 +13,7 @@ use std::fmt;
 
 use fluent_syntax::ast;
 use intl_memoizer::IntlLangMemoizer;
-use unic_langid::LanguageIdentifier;
+use icu::locid::Locale;
 
 use crate::args::FluentArgs;
 use crate::entry::Entry;
@@ -32,7 +32,7 @@ use crate::types::FluentValue;
 ///
 /// ```
 /// use fluent_bundle::{FluentBundle, FluentResource, FluentValue, FluentArgs};
-/// use unic_langid::langid;
+/// use icu::locid::locale;
 ///
 /// // 1. Create a FluentResource
 ///
@@ -43,8 +43,8 @@ use crate::types::FluentValue;
 ///
 /// // 2. Create a FluentBundle
 ///
-/// let langid_en = langid!("en-US");
-/// let mut bundle = FluentBundle::new(vec![langid_en]);
+/// let locale_en = locale!("en-US");
+/// let mut bundle = FluentBundle::new(vec![locale_en]);
 ///
 ///
 /// // 3. Add the resource to the bundle
@@ -86,7 +86,7 @@ use crate::types::FluentValue;
 /// To create a bundle, call [`FluentBundle::new`] with a locale list that represents the best
 /// possible fallback chain for a given locale. The simplest case is a one-locale list.
 ///
-/// Fluent uses [`LanguageIdentifier`] which can be created using `langid!` macro.
+/// Fluent uses [`Locale`] which can be created using `locale!` macro.
 ///
 /// ## Add Resources
 ///
@@ -134,13 +134,13 @@ use crate::types::FluentValue;
 ///
 /// [concurrent::IntlLangMemoizer]: https://docs.rs/intl-memoizer/latest/intl_memoizer/concurrent/struct.IntlLangMemoizer.html
 pub struct FluentBundle<R, M> {
-    pub locales: Vec<LanguageIdentifier>,
+    pub locales: Vec<Locale>,
     pub(crate) resources: Vec<R>,
     pub(crate) entries: FxHashMap<String, Entry>,
     pub(crate) intls: M,
     pub(crate) use_isolating: bool,
     pub(crate) transform: Option<fn(&str) -> Cow<str>>,
-    pub(crate) formatter: Option<fn(&FluentValue, &M) -> Option<String>>,
+    pub(crate) formatter: Option<fn(&FluentValue, &Locale, &M) -> Option<String>>,
 }
 
 impl<R, M> FluentBundle<R, M> {
@@ -154,7 +154,7 @@ impl<R, M> FluentBundle<R, M> {
     ///   - FluentResource
     ///   - &FluentResource
     ///   - Rc<FluentResource>
-    ///   - Arc<FluentResurce>
+    ///   - Arc<FluentResource>
     ///
     /// This allows the user to introduce custom resource management and share
     /// resources between instances of `FluentBundle`.
@@ -163,7 +163,7 @@ impl<R, M> FluentBundle<R, M> {
     ///
     /// ```
     /// use fluent_bundle::{FluentBundle, FluentResource};
-    /// use unic_langid::langid;
+    /// use icu::locid::locale;
     ///
     /// let ftl_string = String::from("
     /// hello = Hi!
@@ -171,7 +171,7 @@ impl<R, M> FluentBundle<R, M> {
     /// ");
     /// let resource = FluentResource::try_new(ftl_string)
     ///     .expect("Could not parse an FTL string.");
-    /// let langid_en = langid!("en-US");
+    /// let locale_en = locale!("en-US");
     /// let mut bundle = FluentBundle::new(vec![langid_en]);
     /// bundle.add_resource(resource)
     ///     .expect("Failed to add FTL resources to the bundle.");
@@ -253,7 +253,7 @@ impl<R, M> FluentBundle<R, M> {
     ///
     /// ```
     /// use fluent_bundle::{FluentBundle, FluentResource};
-    /// use unic_langid::langid;
+    /// use icu::locid::langid;
     ///
     /// let ftl_string = String::from("
     /// hello = Hi!
@@ -349,7 +349,7 @@ impl<R, M> FluentBundle<R, M> {
     ///
     /// It's particularly useful for plugging in an external
     /// formatter for `FluentValue::Number`.
-    pub fn set_formatter(&mut self, func: Option<fn(&FluentValue, &M) -> Option<String>>) {
+    pub fn set_formatter(&mut self, func: Option<fn(&FluentValue, &Locale, &M) -> Option<String>>) {
         self.formatter = func;
     }
 
@@ -359,7 +359,7 @@ impl<R, M> FluentBundle<R, M> {
     ///
     /// ```
     /// use fluent_bundle::{FluentBundle, FluentResource};
-    /// use unic_langid::langid;
+    /// use icu::locid::langid;
     ///
     /// let ftl_string = String::from("hello = Hi!");
     /// let resource = FluentResource::try_new(ftl_string)
@@ -384,7 +384,7 @@ impl<R, M> FluentBundle<R, M> {
     ///
     /// ```
     /// use fluent_bundle::{FluentBundle, FluentResource};
-    /// use unic_langid::langid;
+    /// use icu::locid::langid;
     ///
     /// let ftl_string = String::from("hello-world = Hello World!");
     /// let resource = FluentResource::try_new(ftl_string)
@@ -412,7 +412,7 @@ impl<R, M> FluentBundle<R, M> {
     ///
     /// ```
     /// use fluent_bundle::{FluentBundle, FluentResource};
-    /// use unic_langid::langid;
+    /// use icu::locid::langid;
     ///
     /// let ftl_string = String::from("hello-world = Hello World!");
     /// let resource = FluentResource::try_new(ftl_string)
@@ -459,7 +459,7 @@ impl<R, M> FluentBundle<R, M> {
     ///
     /// ```
     /// use fluent_bundle::{FluentBundle, FluentResource};
-    /// use unic_langid::langid;
+    /// use icu::locid::langid;
     ///
     /// let ftl_string = String::from("hello-world = Hello World!");
     /// let resource = FluentResource::try_new(ftl_string)
@@ -508,7 +508,7 @@ impl<R, M> FluentBundle<R, M> {
     ///
     /// ```
     /// use fluent_bundle::{FluentBundle, FluentResource, FluentValue};
-    /// use unic_langid::langid;
+    /// use icu::locid::langid;
     ///
     /// let ftl_string = String::from("length = { STRLEN(\"12345\") }");
     /// let resource = FluentResource::try_new(ftl_string)
@@ -551,7 +551,7 @@ impl<R, M> FluentBundle<R, M> {
 
 impl<R> Default for FluentBundle<R, IntlLangMemoizer> {
     fn default() -> Self {
-        Self::new(vec![LanguageIdentifier::default()])
+        Self::new(vec![Locale::default()])
     }
 }
 
@@ -567,7 +567,7 @@ impl<R> FluentBundle<R, IntlLangMemoizer> {
     /// ```
     /// use fluent_bundle::FluentBundle;
     /// use fluent_bundle::FluentResource;
-    /// use unic_langid::langid;
+    /// use icu::locid::langid;
     ///
     /// let langid_en = langid!("en-US");
     /// let mut bundle: FluentBundle<FluentResource> = FluentBundle::new(vec![langid_en]);
@@ -576,9 +576,9 @@ impl<R> FluentBundle<R, IntlLangMemoizer> {
     /// # Errors
     ///
     /// This will panic if no formatters can be found for the locales.
-    pub fn new(locales: Vec<LanguageIdentifier>) -> Self {
+    pub fn new(locales: Vec<Locale>) -> Self {
         let first_locale = locales.get(0).cloned().unwrap_or_default();
-        Self {
+        let mut res = Self {
             locales,
             resources: vec![],
             entries: FxHashMap::default(),
@@ -586,12 +586,55 @@ impl<R> FluentBundle<R, IntlLangMemoizer> {
             use_isolating: true,
             transform: None,
             formatter: None,
-        }
+        };
+
+        res.add_function("NUMBER", |args, named_args| {
+            if args.len() != 1 {
+                return FluentValue::Error
+            }
+
+            let arg = args[0].clone();
+
+            //println!("NUMBER CALLED: {:#?}", arg);
+            //println!("NUMBER NEW: {:#?}", named_args);
+
+            let res = match arg {
+                FluentValue::Number(mut num) => {
+                    num.options.merge(named_args);
+                    FluentValue::Number(num)
+                }
+                _ => FluentValue::Error
+            };
+
+            //println!("NUMBER RES: {:#?}", res);
+
+            res
+        }).unwrap();
+
+        res.add_function("DATETIME", |args, named_args| {
+            if args.len() != 1 {
+                return FluentValue::Error
+            }
+
+            let arg = args[0].clone();
+
+            let res = match arg {
+                FluentValue::DateTime(mut dt) => {
+                    dt.options.merge(named_args);
+                    FluentValue::DateTime(dt)
+                }
+                _ => FluentValue::Error
+            };
+
+            res
+        }).unwrap();
+
+        res
     }
 }
 
 impl crate::memoizer::MemoizerKind for IntlLangMemoizer {
-    fn new(lang: LanguageIdentifier) -> Self
+    fn new(lang: Locale) -> Self
     where
         Self: Sized,
     {
@@ -613,5 +656,9 @@ impl crate::memoizer::MemoizerKind for IntlLangMemoizer {
         value: &dyn crate::types::FluentType,
     ) -> std::borrow::Cow<'static, str> {
         value.as_string(self)
+    }
+
+    fn language(&self) -> &Locale {
+        &self.lang()
     }
 }

@@ -2,7 +2,7 @@ use fluent_bundle::{FluentBundle, FluentError, FluentResource};
 use futures::Stream;
 use rustc_hash::FxHashSet;
 use std::borrow::Borrow;
-use unic_langid::LanguageIdentifier;
+use icu::locid::Locale;
 
 use crate::types::ResourceId;
 
@@ -19,7 +19,7 @@ pub trait BundleStream {
 
 pub trait BundleGenerator {
     type Resource: Borrow<FluentResource>;
-    type LocalesIter: Iterator<Item = LanguageIdentifier>;
+    type LocalesIter: Iterator<Item = Locale>;
     type Iter: Iterator<Item = FluentBundleResult<Self::Resource>>;
     type Stream: Stream<Item = FluentBundleResult<Self::Resource>>;
 

@@ -1,13 +1,13 @@
 use fluent_bundle::{FluentArgs, FluentBundle, FluentResource};
 use std::borrow::Cow;
-use unic_langid::langid;
+use icu::locid::locale;
 
 #[test]
 fn add_resource_override() {
     let res = FluentResource::try_new("key = Value".to_string()).unwrap();
     let res2 = FluentResource::try_new("key = Value 2".to_string()).unwrap();
 
-    let en_us = langid!("en-US");
+    let en_us = locale!("en-US");
     let mut bundle = FluentBundle::new(vec![en_us]);
 
     bundle.add_resource(&res).expect("Failed to add a resource");
@@ -38,7 +38,7 @@ fn add_resource_override() {
 #[test]
 fn borrowed_plain_message() {
     let res = FluentResource::try_new("key = Value".to_string()).unwrap();
-    let en_us = langid!("en-US");
+    let en_us = locale!("en-US");
 
     let mut bundle = FluentBundle::new(vec![en_us]);
     bundle.add_resource(&res).expect("Failed to add a resource");
@@ -68,7 +68,7 @@ fn borrowed_plain_message() {
 #[test]
 fn arguments_outlive_formatted_pattern() {
     let res = FluentResource::try_new("key = { $variable }".to_string()).unwrap();
-    let en_us = langid!("en-US");
+    let en_us = locale!("en-US");
 
     let mut bundle = FluentBundle::new(vec![en_us]);
     bundle.add_resource(&res).expect("Failed to add a resource");

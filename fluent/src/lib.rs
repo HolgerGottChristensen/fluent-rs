@@ -20,7 +20,7 @@
 //! use fluent::{FluentBundle, FluentValue, FluentResource, FluentArgs};
 //!
 //! // Used to provide a locale for the bundle.
-//! use unic_langid::LanguageIdentifier;
+//! use icu::locid::Locale;
 //!
 //! let ftl_string = String::from("
 //! hello-world = Hello, world!
@@ -29,8 +29,8 @@
 //! let res = FluentResource::try_new(ftl_string)
 //!     .expect("Failed to parse an FTL string.");
 //!
-//! let langid_en: LanguageIdentifier = "en-US".parse().expect("Parsing failed");
-//! let mut bundle = FluentBundle::new(vec![langid_en]);
+//! let locale_en: Locale = "en-US".parse().expect("Parsing failed");
+//! let mut bundle = FluentBundle::new(vec![locale_en]);
 //!
 //! bundle
 //!     .add_resource(res)

@@ -28,20 +28,22 @@ include = [
 [dependencies]
 fluent-langneg.workspace = true
 fluent-syntax.workspace = true
-intl_pluralrules.workspace = true
 rustc-hash.workspace = true
-unic-langid.workspace = true
+icu.workspace = true
 intl-memoizer = { path = "../intl-memoizer" }
 self_cell = "0.10"
 smallvec = "1"
+chrono = "0.4"
+fixed_decimal = "0.5.4"
 
 [dev-dependencies]
 criterion.workspace = true
 iai.workspace = true
 serde = { workspace = true, features = ["derive"]}
-unic-langid = { workspace = true, features = ["macros"] }
+icu = { workspace = true }
 rand = "0.8"
 serde_yaml = "0.8"
+
 
 [features]
 default = []

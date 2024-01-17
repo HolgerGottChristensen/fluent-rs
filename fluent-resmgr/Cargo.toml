@@ -22,9 +22,9 @@ fluent-fallback.workspace = true
 futures.workspace = true
 rustc-hash.workspace = true
 thiserror.workspace = true
-unic-langid.workspace = true
+icu.workspace = true
 elsa = "1.5"
 
 [dev-dependencies]
 fluent-langneg.workspace = true
-unic-langid = { workspace = true, features = ["macros"] }
+icu.workspace = true

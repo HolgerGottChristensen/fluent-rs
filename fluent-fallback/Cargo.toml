@@ -21,7 +21,7 @@ categories = ["localization", "internationalization"]
 fluent-bundle.workspace = true
 futures.workspace = true
 rustc-hash.workspace = true
-unic-langid.workspace = true
+icu.workspace = true
 async-trait = "0.1"
 chunky-vec = "0.1"
 once_cell = "1.9"
@@ -29,6 +29,6 @@ pin-cell = "0.2"
 
 [dev-dependencies]
 fluent-langneg.workspace = true
-unic-langid = { workspace = true, features = ["macros"] }
+icu.workspace = true
 tokio = { workspace = true, features = ["rt-multi-thread", "macros"] }
 fluent-resmgr = { path = "../fluent-resmgr" }

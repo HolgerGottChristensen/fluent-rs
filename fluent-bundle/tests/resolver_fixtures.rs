@@ -12,7 +12,7 @@ use fluent_bundle::FluentError;
 use fluent_bundle::{FluentBundle, FluentResource, FluentValue};
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
-use unic_langid::LanguageIdentifier;
+use icu::locid::Locale;
 
 use helpers::*;
 
@@ -94,7 +94,7 @@ fn create_bundle(
 ) -> FluentBundle<FluentResource> {
     let mut errors = vec![];
 
-    let locales: Vec<LanguageIdentifier> = b
+    let locales: Vec<Locale> = b
         .and_then(|b| b.locales.as_ref())
         .or_else(|| {
             defaults

@@ -13,16 +13,18 @@
 //! such as dates, or more complex structures needed for their bindings.
 mod number;
 mod plural;
+mod datetime;
 
 pub use number::*;
-use plural::PluralRules;
+pub use datetime::*;
 
 use std::any::Any;
 use std::borrow::{Borrow, Cow};
 use std::fmt;
+use std::fmt::Write;
 use std::str::FromStr;
-
-use intl_pluralrules::{PluralCategory, PluralRuleType};
+use icu::plurals::PluralRuleType::Cardinal;
+use plural::plural_category;
 
 use crate::memoizer::MemoizerKind;
 use crate::resolver::Scope;
@@ -79,6 +81,7 @@ impl<T: Any + PartialEq> AnyEq for T {
 pub enum FluentValue<'source> {
     String(Cow<'source, str>),
     Number(FluentNumber),
+    DateTime(FluentDateTime),
     Custom(Box<dyn FluentType + Send>),
     None,
     Error,
@@ -89,6 +92,7 @@ impl<'s> PartialEq for FluentValue<'s> {
         match (self, other) {
             (FluentValue::String(s), FluentValue::String(s2)) => s == s2,
             (FluentValue::Number(s), FluentValue::Number(s2)) => s == s2,
+            (FluentValue::DateTime(s), FluentValue::DateTime(s2)) => s == s2,
             (FluentValue::Custom(s), FluentValue::Custom(s2)) => s == s2,
             _ => false,
         }
@@ -106,6 +110,7 @@ impl<'s> Clone for FluentValue<'s> {
             }
             FluentValue::Error => FluentValue::Error,
             FluentValue::None => FluentValue::None,
+            FluentValue::DateTime(d) => FluentValue::DateTime(d.clone()),
         }
     }
 }
@@ -157,10 +162,10 @@ impl<'source> FluentValue<'source> {
     /// ```
     /// use fluent_bundle::resolver::Scope;
     /// use fluent_bundle::{types::FluentValue, FluentBundle, FluentResource};
-    /// use unic_langid::langid;
+    /// use icu::locid::locale;
     ///
-    /// let langid_ars = langid!("en");
-    /// let bundle: FluentBundle<FluentResource> = FluentBundle::new(vec![langid_ars]);
+    /// let locale_ars = locale!("en");
+    /// let bundle: FluentBundle<FluentResource> = FluentBundle::new(vec![locale_ars]);
     /// let scope = Scope::new(&bundle, None, None);
     ///
     /// // Matching examples:
@@ -189,24 +194,17 @@ impl<'source> FluentValue<'source> {
             (&FluentValue::Number(ref a), &FluentValue::Number(ref b)) => a == b,
             (&FluentValue::String(ref a), &FluentValue::Number(ref b)) => {
                 let cat = match a.as_ref() {
-                    "zero" => PluralCategory::ZERO,
-                    "one" => PluralCategory::ONE,
-                    "two" => PluralCategory::TWO,
-                    "few" => PluralCategory::FEW,
-                    "many" => PluralCategory::MANY,
-                    "other" => PluralCategory::OTHER,
+                    "zero" => icu::plurals::PluralCategory::Zero,
+                    "one" => icu::plurals::PluralCategory::One,
+                    "two" => icu::plurals::PluralCategory::Two,
+                    "few" => icu::plurals::PluralCategory::Few,
+                    "many" => icu::plurals::PluralCategory::Many,
+                    "other" => icu::plurals::PluralCategory::Other,
                     _ => return false,
                 };
                 // This string matches a plural rule keyword. Check if the number
                 // matches the plural rule category.
-                scope
-                    .bundle
-                    .intls
-                    .with_try_get_threadsafe::<PluralRules, _, _>(
-                        (PluralRuleType::CARDINAL,),
-                        |pr| pr.0.select(b) == Ok(cat),
-                    )
-                    .unwrap()
+                plural_category(scope.bundle.locales.first().unwrap(), Cardinal, b) == cat
             }
             _ => false,
         }
@@ -220,13 +218,14 @@ impl<'source> FluentValue<'source> {
         M: MemoizerKind,
     {
         if let Some(formatter) = &scope.bundle.formatter {
-            if let Some(val) = formatter(self, &scope.bundle.intls) {
+            if let Some(val) = formatter(self, &scope.bundle.intls.language(), &scope.bundle.intls) {
                 return w.write_str(&val);
             }
         }
         match self {
             FluentValue::String(s) => w.write_str(s),
-            FluentValue::Number(n) => w.write_str(&n.as_string()),
+            FluentValue::Number(n) => w.write_str(&n.as_string(scope.bundle.locales.first().unwrap())),
+            FluentValue::DateTime(d) => w.write_str(&d.as_string(scope.bundle.locales.first().unwrap())),
             FluentValue::Custom(s) => w.write_str(&scope.bundle.intls.stringify_value(&**s)),
             FluentValue::Error => Ok(()),
             FluentValue::None => Ok(()),
@@ -242,13 +241,14 @@ impl<'source> FluentValue<'source> {
         M: MemoizerKind,
     {
         if let Some(formatter) = &scope.bundle.formatter {
-            if let Some(val) = formatter(self, &scope.bundle.intls) {
+            if let Some(val) = formatter(self, &scope.bundle.intls.language(), &scope.bundle.intls) {
                 return val.into();
             }
         }
         match self {
             FluentValue::String(s) => s.clone(),
-            FluentValue::Number(n) => n.as_string(),
+            FluentValue::Number(n) => n.as_string(scope.bundle.locales.first().unwrap()),
+            FluentValue::DateTime(d) => d.as_string(scope.bundle.locales.first().unwrap()),
             FluentValue::Custom(s) => scope.bundle.intls.stringify_value(&**s),
             FluentValue::Error => "".into(),
             FluentValue::None => "".into(),
@@ -264,13 +264,14 @@ impl<'source> FluentValue<'source> {
         M: MemoizerKind,
     {
         if let Some(formatter) = &scope.bundle.formatter {
-            if let Some(val) = formatter(&self, &scope.bundle.intls) {
+            if let Some(val) = formatter(&self, &scope.bundle.intls.language(), &scope.bundle.intls) {
                 return val.into();
             }
         }
         match self {
             FluentValue::String(s) => s,
-            FluentValue::Number(n) => n.as_string(),
+            FluentValue::Number(n) => n.as_string(scope.bundle.locales.first().unwrap()),
+            FluentValue::DateTime(d) => d.as_string(scope.bundle.locales.first().unwrap()),
             FluentValue::Custom(s) => scope.bundle.intls.stringify_value(s.as_ref()),
             FluentValue::Error => "".into(),
             FluentValue::None => "".into(),
@@ -284,6 +285,7 @@ impl<'source> FluentValue<'source> {
             FluentValue::Custom(s) => FluentValue::Custom(s.duplicate()),
             FluentValue::Error => FluentValue::Error,
             FluentValue::None => FluentValue::None,
+            FluentValue::DateTime(d) => FluentValue::DateTime(d.clone())
         }
     }
 }

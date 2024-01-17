@@ -6,17 +6,21 @@ use std::sync::Mutex;
 /// See the single-thread version for more documentation.
 #[derive(Debug)]
 pub struct IntlLangMemoizer {
-    lang: LanguageIdentifier,
+    lang: Locale,
     map: Mutex<type_map::concurrent::TypeMap>,
 }
 
 impl IntlLangMemoizer {
-    /// Create a new [`IntlLangMemoizer`] that is unique to a specific [`LanguageIdentifier`]
-    pub fn new(lang: LanguageIdentifier) -> Self {
+    /// Create a new [`IntlLangMemoizer`] that is unique to a specific [`Locale`]
+    pub fn new(lang: Locale) -> Self {
         Self {
             lang,
             map: Mutex::new(type_map::concurrent::TypeMap::new()),
         }
+    }
+
+    pub fn lang(&self) -> &Locale {
+        &self.lang
     }
 
     /// Lazily initialize and run a formatter. See

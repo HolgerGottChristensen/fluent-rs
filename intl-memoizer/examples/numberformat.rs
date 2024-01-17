@@ -1,5 +1,5 @@
 use intl_memoizer::{IntlMemoizer, Memoizable};
-use unic_langid::LanguageIdentifier;
+use icu::locid::Locale;
 
 #[derive(Clone, Hash, PartialEq, Eq)]
 struct NumberFormatOptions {
@@ -8,12 +8,12 @@ struct NumberFormatOptions {
 }
 
 struct NumberFormat {
-    lang: LanguageIdentifier,
+    lang: Locale,
     options: NumberFormatOptions,
 }
 
 impl NumberFormat {
-    pub fn new(lang: LanguageIdentifier, options: NumberFormatOptions) -> Result<Self, ()> {
+    pub fn new(lang: Locale, options: NumberFormatOptions) -> Result<Self, ()> {
         Ok(Self { lang, options })
     }
 
@@ -28,7 +28,7 @@ impl NumberFormat {
 impl Memoizable for NumberFormat {
     type Args = (NumberFormatOptions,);
     type Error = ();
-    fn construct(lang: LanguageIdentifier, args: Self::Args) -> Result<Self, Self::Error> {
+    fn construct(lang: Locale, args: Self::Args) -> Result<Self, Self::Error> {
         Self::new(lang, args.0)
     }
 }
@@ -36,7 +36,7 @@ impl Memoizable for NumberFormat {
 fn main() {
     let mut memoizer = IntlMemoizer::default();
 
-    let lang: LanguageIdentifier = "en-US".parse().unwrap();
+    let lang: Locale = "en-US".parse().unwrap();
     {
         // Create an en-US memoizer
         let lang_memoizer = memoizer.get_for_lang(lang.clone());

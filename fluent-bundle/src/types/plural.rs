@@ -1,22 +1,34 @@
-use fluent_langneg::{negotiate_languages, NegotiationStrategy};
-use intl_memoizer::Memoizable;
-use intl_pluralrules::{PluralRuleType, PluralRules as IntlPluralRules};
-use unic_langid::LanguageIdentifier;
+use std::cell::RefCell;
+use std::collections::HashMap;
+use icu::locid::Locale;
+use icu::plurals::{PluralCategory, PluralOperands, PluralRules, PluralRuleType};
 
-pub struct PluralRules(pub IntlPluralRules);
+thread_local! {
+    // Ordinal, Cardinal
+    static PLURALS: RefCell<HashMap<Locale, (PluralRules, PluralRules)>> = RefCell::new(HashMap::new());
+}
 
-impl Memoizable for PluralRules {
-    type Args = (PluralRuleType,);
-    type Error = &'static str;
-    fn construct(lang: LanguageIdentifier, args: Self::Args) -> Result<Self, Self::Error> {
-        let default_lang: LanguageIdentifier = "en".parse().unwrap();
-        let pr_lang = negotiate_languages(
-            &[lang],
-            &IntlPluralRules::get_locales(args.0),
-            Some(&default_lang),
-            NegotiationStrategy::Lookup,
-        )[0]
-        .clone();
-        Ok(Self(IntlPluralRules::create(pr_lang, args.0)?))
-    }
+pub fn plural_category<I: Into<PluralOperands>>(locale: &Locale, plural_rule_type: PluralRuleType, input: I) -> PluralCategory {
+    PLURALS.with(|cell| {
+        if let Some((ordinal, cardinal)) = cell.borrow().get(locale) {
+            return match plural_rule_type {
+                PluralRuleType::Cardinal => cardinal.category_for(input),
+                PluralRuleType::Ordinal => ordinal.category_for(input),
+                _ => panic!("New plural rule type that should be implemented")
+            };
+        }
+
+        let ordinal = PluralRules::try_new(&locale.into(), PluralRuleType::Ordinal).unwrap();
+        let cardinal = PluralRules::try_new(&locale.into(), PluralRuleType::Cardinal).unwrap();
+
+        let res = match plural_rule_type {
+            PluralRuleType::Cardinal => cardinal.category_for(input),
+            PluralRuleType::Ordinal => ordinal.category_for(input),
+            _ => panic!("New plural rule type that should be implemented")
+        };
+
+        cell.borrow_mut().insert(locale.clone(), (ordinal, cardinal));
+
+        res
+    })
 }

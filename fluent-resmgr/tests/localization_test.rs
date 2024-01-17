@@ -1,7 +1,7 @@
 use fluent_fallback::Localization;
 use fluent_resmgr::resource_manager::ResourceManager;
 use std::borrow::Cow;
-use unic_langid::langid;
+use icu::locid::locale;
 
 #[test]
 fn localization_format_value() {
@@ -37,7 +37,7 @@ fn resmgr_get_bundle() {
     let res_mgr = ResourceManager::new("./tests/resources/{locale}/{res_id}".into());
 
     let bundle = res_mgr
-        .get_bundle(vec![langid!("en-US")], vec!["test.ftl".into()])
+        .get_bundle(vec![locale!("en-US")], vec!["test.ftl".into()])
         .expect("Could not get bundle");
 
     let mut errors = vec![];
@@ -51,7 +51,7 @@ fn resmgr_get_bundle() {
 fn resmgr_get_bundles() {
     let res_mgr = ResourceManager::new("./tests/resources/{locale}/{res_id}".into());
 
-    let locales = vec![langid!("en-US"), langid!("pl")];
+    let locales = vec![locale!("en-US"), locale!("pl")];
     let mut bundles_iter = res_mgr.get_bundles(locales, vec!["test.ftl".into()]);
 
     {
