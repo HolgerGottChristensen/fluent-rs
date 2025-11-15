@@ -1,4 +1,4 @@
-use fluent_bundle::FluentArgs;
+use fluent_bundle_for_carbide::FluentArgs;
 use std::borrow::Cow;
 
 #[derive(Debug)]

@@ -9,11 +9,11 @@
 // Lastly, we'll also create a new formatter which will be memoizable.
 //
 // The type and its options are modelled after ECMA402 Intl.DateTimeFormat.
-use intl_memoizer::Memoizable;
+use intl_memoizer_for_carbide::Memoizable;
 use icu::locid::Locale;
 
-use fluent_bundle::types::FluentType;
-use fluent_bundle::{FluentArgs, FluentBundle, FluentResource, FluentValue};
+use fluent_bundle_for_carbide::types::FluentType;
+use fluent_bundle_for_carbide::{FluentArgs, FluentBundle, FluentResource, FluentValue};
 
 // First we're going to define what options our new type is going to accept.
 // For the sake of the example, we're only going to allow two options:
@@ -105,7 +105,7 @@ impl FluentType for DateTime {
     fn duplicate(&self) -> Box<dyn FluentType + Send> {
         Box::new(DateTime::new(self.epoch, DateTimeOptions::default()))
     }
-    fn as_string(&self, intls: &intl_memoizer::IntlLangMemoizer) -> std::borrow::Cow<'static, str> {
+    fn as_string(&self, intls: &intl_memoizer_for_carbide::IntlLangMemoizer) -> std::borrow::Cow<'static, str> {
         intls
             .with_try_get::<DateTimeFormatter, _, _>((self.options.clone(),), |dtf| {
                 dtf.format(self.epoch).into()
@@ -114,7 +114,7 @@ impl FluentType for DateTime {
     }
     fn as_string_threadsafe(
         &self,
-        _: &intl_memoizer::concurrent::IntlLangMemoizer,
+        _: &intl_memoizer_for_carbide::concurrent::IntlLangMemoizer,
     ) -> std::borrow::Cow<'static, str> {
         format!("2020-01-20 {}:00", self.epoch).into()
     }

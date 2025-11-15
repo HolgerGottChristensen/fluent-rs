@@ -1,6 +1,6 @@
 use elsa::FrozenMap;
-use fluent_bundle::{FluentBundle, FluentResource};
-use fluent_fallback::{
+use fluent_bundle_for_carbide::{FluentBundle, FluentResource};
+use fluent_fallback_for_carbide::{
     generator::{BundleGenerator, FluentBundleResult},
     types::ResourceId,
 };
@@ -152,7 +152,7 @@ pub enum ResourceManagerError {
 
     /// Error while trying to add a resource to the bundle
     #[error("{0}")]
-    Fluent(#[from] fluent_bundle::FluentError),
+    Fluent(#[from] fluent_bundle_for_carbide::FluentError),
 }
 
 // Due to limitation of trait, we need a nameable Iterator type.  Due to the

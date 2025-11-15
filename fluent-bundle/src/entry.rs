@@ -3,7 +3,7 @@
 
 use std::borrow::Borrow;
 
-use fluent_syntax::ast;
+use fluent_syntax_for_carbide::ast;
 
 use crate::args::FluentArgs;
 use crate::bundle::FluentBundle;

@@ -1,5 +1,5 @@
-use fluent_syntax::ast;
-use fluent_syntax::parser::{parse_runtime, ParserError};
+use fluent_syntax_for_carbide::ast;
+use fluent_syntax_for_carbide::parser::{parse_runtime, ParserError};
 
 use self_cell::self_cell;
 

@@ -1,5 +1,5 @@
-use fluent::fluent_args;
-use fluent::FluentValue;
+use fluent_for_carbide::fluent_args;
+use fluent_for_carbide::FluentValue;
 use std::borrow::Cow;
 
 #[test]

@@ -1,4 +1,4 @@
-use fluent_bundle::{FluentArgs, FluentBundle, FluentResource, FluentValue};
+use fluent_bundle_for_carbide::{FluentArgs, FluentBundle, FluentResource, FluentValue};
 
 fn main() {
     let ftl_string = String::from(

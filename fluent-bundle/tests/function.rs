@@ -1,5 +1,5 @@
-use fluent_bundle::types::FluentNumber;
-use fluent_bundle::{FluentArgs, FluentBundle, FluentResource, FluentValue};
+use fluent_bundle_for_carbide::types::FluentNumber;
+use fluent_bundle_for_carbide::{FluentArgs, FluentBundle, FluentResource, FluentValue};
 
 #[test]
 fn test_function_resolve() {

@@ -1,4 +1,4 @@
-use intl_memoizer::{concurrent::IntlLangMemoizer, Memoizable};
+use intl_memoizer_for_carbide::{concurrent::IntlLangMemoizer, Memoizable};
 use rustc_hash::FxHashMap;
 use icu::locid::Locale;
 use crate::FluentValue;

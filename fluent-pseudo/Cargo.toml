@@ -1,5 +1,5 @@
 [package]
-name = "fluent-pseudo"
+name = "fluent-pseudo_for_carbide"
 description = """
 Pseudolocalization transformation API for use with Project Fluent API.
 """

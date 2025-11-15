@@ -75,7 +75,7 @@
 //!
 //! [`FluentBundle`]: bundle::FluentBundle
 
-pub use fluent_bundle::*;
+pub use fluent_bundle_for_carbide::*;
 
 /// A helper macro to simplify creation of FluentArgs.
 ///

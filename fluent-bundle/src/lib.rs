@@ -119,7 +119,7 @@ pub use args::FluentArgs;
 ///
 /// The concurrent specialization can be constructed with
 /// [`FluentBundle::new_concurrent`](crate::concurrent::FluentBundle::new_concurrent).
-pub type FluentBundle<R> = bundle::FluentBundle<R, intl_memoizer::IntlLangMemoizer>;
+pub type FluentBundle<R> = bundle::FluentBundle<R, intl_memoizer_for_carbide::IntlLangMemoizer>;
 pub use errors::FluentError;
 pub use message::{FluentAttribute, FluentMessage};
 pub use resource::FluentResource;

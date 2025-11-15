@@ -1,5 +1,5 @@
-use fluent_fallback::Localization;
-use fluent_resmgr::resource_manager::ResourceManager;
+use fluent_fallback_for_carbide::Localization;
+use fluent_resmgr_for_carbide::resource_manager::ResourceManager;
 use std::borrow::Cow;
 use icu::locid::locale;
 

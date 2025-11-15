@@ -1,4 +1,4 @@
-use fluent_bundle::FluentError;
+use fluent_bundle_for_carbide::FluentError;
 use std::error::Error;
 use icu::locid::Locale;
 

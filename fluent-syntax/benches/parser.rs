@@ -5,7 +5,7 @@ use std::collections::HashMap;
 use std::fs;
 use std::io;
 
-use fluent_syntax::parser::parse_runtime;
+use fluent_syntax_for_carbide::parser::parse_runtime;
 
 fn read_file(path: &str) -> Result<String, io::Error> {
     fs::read_to_string(path)

@@ -1,5 +1,5 @@
 [package]
-name = "fluent-fallback"
+name = "fluent-fallback_for_carbide"
 description = """
 High-level abstraction model for managing localization resources
 and runtime localization lifecycle.
@@ -18,7 +18,7 @@ keywords = ["localization", "l10n", "i18n", "intl", "internationalization"]
 categories = ["localization", "internationalization"]
 
 [dependencies]
-fluent-bundle.workspace = true
+fluent-bundle_for_carbide.workspace = true
 futures.workspace = true
 rustc-hash.workspace = true
 icu.workspace = true
@@ -28,7 +28,7 @@ once_cell = "1.9"
 pin-cell = "0.2"
 
 [dev-dependencies]
-fluent-langneg.workspace = true
+fluent-langneg_for_carbide.workspace = true
 icu.workspace = true
 tokio = { workspace = true, features = ["rt-multi-thread", "macros"] }
-fluent-resmgr = { path = "../fluent-resmgr" }
+fluent-resmgr_for_carbide = { path = "../fluent-resmgr" }

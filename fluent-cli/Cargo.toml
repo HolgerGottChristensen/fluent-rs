@@ -26,8 +26,8 @@ name = "parser-cli"
 path = "src/main.rs"
 
 [dependencies]
-fluent-bundle.workspace = true
-fluent-syntax.workspace = true
+fluent-bundle_for_carbide.workspace = true
+fluent-syntax_for_carbide.workspace = true
 serde = { workspace = true, features = ["derive"]}
 serde_json.workspace = true
 annotate-snippets = { version = "0.6", features = ["color"] }

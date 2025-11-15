@@ -1,5 +1,5 @@
 [package]
-name = "intl-memoizer"
+name = "intl-memoizer_for_carbide"
 description = """
 A memoizer specifically tailored for storing lazy-initialized
 intl formatters.
@@ -30,4 +30,4 @@ icu.workspace = true
 type-map = "0.5"
 
 [dev-dependencies]
-fluent-langneg.workspace = true
+fluent-langneg_for_carbide.workspace = true

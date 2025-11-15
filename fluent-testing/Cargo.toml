@@ -1,5 +1,5 @@
 [package]
-name = "fluent-testing"
+name = "fluent-testing_for_carbide"
 description = """
 A collection of mock scenarios for testing fluent-rs components.
 """
@@ -25,8 +25,8 @@ include = [
 ]
 
 [dependencies]
-fluent-bundle.workspace = true
-fluent-fallback.workspace = true
+fluent-bundle_for_carbide.workspace = true
+fluent-fallback_for_carbide.workspace = true
 tokio = { workspace = true, optional = true, features = ["fs", "rt-multi-thread", "macros", "io-util"] }
 
 [features]

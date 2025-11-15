@@ -6,10 +6,10 @@ use std::fs;
 use std::iter;
 use std::path::Path;
 
-use fluent_bundle::resolver::ResolverError;
-use fluent_bundle::FluentArgs;
-use fluent_bundle::FluentError;
-use fluent_bundle::{FluentBundle, FluentResource, FluentValue};
+use fluent_bundle_for_carbide::resolver::ResolverError;
+use fluent_bundle_for_carbide::FluentArgs;
+use fluent_bundle_for_carbide::FluentError;
+use fluent_bundle_for_carbide::{FluentBundle, FluentResource, FluentValue};
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
 use icu::locid::Locale;

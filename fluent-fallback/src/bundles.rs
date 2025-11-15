@@ -5,7 +5,7 @@ use crate::{
     generator::{BundleGenerator, BundleIterator, BundleStream},
     types::{L10nAttribute, L10nKey, L10nMessage, ResourceId},
 };
-use fluent_bundle::{FluentArgs, FluentBundle, FluentError};
+use fluent_bundle_for_carbide::{FluentArgs, FluentBundle, FluentError};
 use rustc_hash::FxHashSet;
 use std::borrow::Cow;
 

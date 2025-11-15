@@ -1,11 +1,11 @@
-use fluent_syntax::ast::{Entry, Resource};
+use fluent_syntax_for_carbide::ast::{Entry, Resource};
 use glob::glob;
 use std::ffi::OsStr;
 use std::fs;
 use std::path::Path;
 
-use fluent_syntax::parser::parse;
-use fluent_syntax::serializer::{serialize, serialize_with_options, Options};
+use fluent_syntax_for_carbide::parser::parse;
+use fluent_syntax_for_carbide::serializer::{serialize, serialize_with_options, Options};
 
 /// List of files that currently do not roundtrip correctly.
 ///

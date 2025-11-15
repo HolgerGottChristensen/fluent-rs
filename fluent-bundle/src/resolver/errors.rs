@@ -1,4 +1,4 @@
-use fluent_syntax::ast::InlineExpression;
+use fluent_syntax_for_carbide::ast::InlineExpression;
 use std::error::Error;
 
 /// Maps an [`InlineExpression`] into the kind of reference, with owned strings

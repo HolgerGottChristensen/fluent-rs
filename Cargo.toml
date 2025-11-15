@@ -26,8 +26,8 @@ thiserror = "1.0"
 tokio = "1.0"
 icu = "1"
 
-fluent-bundle = { path = "fluent-bundle" }
-fluent-fallback = { path = "fluent-fallback" }
-fluent-pseudo = { path = "fluent-pseudo" }
-fluent-syntax = { path = "fluent-syntax" }
-fluent-langneg = { path = "fluent-langneg" }
+fluent-bundle_for_carbide = { path = "fluent-bundle" }
+fluent-fallback_for_carbide = { path = "fluent-fallback" }
+fluent-pseudo_for_carbide = { path = "fluent-pseudo" }
+fluent-syntax_for_carbide = { path = "fluent-syntax" }
+fluent-langneg_for_carbide = { path = "fluent-langneg" }

@@ -1,11 +1,11 @@
 use std::borrow::Cow;
 use std::fs;
 
-use fluent_bundle::{
+use fluent_bundle_for_carbide::{
     resolver::errors::{ReferenceKind, ResolverError},
     FluentArgs, FluentBundle, FluentError, FluentResource,
 };
-use fluent_fallback::{
+use fluent_fallback_for_carbide::{
     env::LocalesProvider,
     generator::{BundleGenerator, FluentBundleResult},
     types::{L10nKey, ResourceId},

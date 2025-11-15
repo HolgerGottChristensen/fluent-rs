@@ -1,9 +1,9 @@
-use fluent_bundle::memoizer::MemoizerKind;
-use fluent_bundle::types::FluentType;
-use fluent_bundle::FluentArgs;
-use fluent_bundle::FluentBundle;
-use fluent_bundle::FluentResource;
-use fluent_bundle::FluentValue;
+use fluent_bundle_for_carbide::memoizer::MemoizerKind;
+use fluent_bundle_for_carbide::types::FluentType;
+use fluent_bundle_for_carbide::FluentArgs;
+use fluent_bundle_for_carbide::FluentBundle;
+use fluent_bundle_for_carbide::FluentResource;
+use fluent_bundle_for_carbide::FluentValue;
 use icu::locid::locale;
 
 #[test]
@@ -23,12 +23,12 @@ fn fluent_custom_type() {
         fn duplicate(&self) -> Box<dyn FluentType + Send> {
             Box::new(DateTime { epoch: self.epoch })
         }
-        fn as_string(&self, _: &intl_memoizer::IntlLangMemoizer) -> std::borrow::Cow<'static, str> {
+        fn as_string(&self, _: &intl_memoizer_for_carbide::IntlLangMemoizer) -> std::borrow::Cow<'static, str> {
             format!("{}", self.epoch).into()
         }
         fn as_string_threadsafe(
             &self,
-            _: &intl_memoizer::concurrent::IntlLangMemoizer,
+            _: &intl_memoizer_for_carbide::concurrent::IntlLangMemoizer,
         ) -> std::borrow::Cow<'static, str> {
             format!("{}", self.epoch).into()
         }
@@ -120,12 +120,12 @@ fn fluent_date_time_builtin() {
         fn duplicate(&self) -> Box<dyn FluentType + Send> {
             Box::new(DateTime::new(self.epoch, DateTimeOptions::default()))
         }
-        fn as_string(&self, _: &intl_memoizer::IntlLangMemoizer) -> std::borrow::Cow<'static, str> {
+        fn as_string(&self, _: &intl_memoizer_for_carbide::IntlLangMemoizer) -> std::borrow::Cow<'static, str> {
             format!("2020-01-20 {}:00", self.epoch).into()
         }
         fn as_string_threadsafe(
             &self,
-            _intls: &intl_memoizer::concurrent::IntlLangMemoizer,
+            _intls: &intl_memoizer_for_carbide::concurrent::IntlLangMemoizer,
         ) -> std::borrow::Cow<'static, str> {
             format!("2020-01-20 {}:00", self.epoch).into()
         }

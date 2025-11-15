@@ -1,4 +1,4 @@
-use fluent_syntax::ast;
+use fluent_syntax_for_carbide::ast;
 
 /// [`FluentAttribute`] is a component of a compound [`FluentMessage`].
 ///

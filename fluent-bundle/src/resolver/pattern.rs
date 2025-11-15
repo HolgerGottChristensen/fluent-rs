@@ -4,7 +4,7 @@ use super::{ResolverError, WriteValue};
 use std::borrow::Borrow;
 use std::fmt;
 
-use fluent_syntax::ast;
+use fluent_syntax_for_carbide::ast;
 
 use crate::memoizer::MemoizerKind;
 use crate::resolver::ResolveValue;

@@ -1,5 +1,5 @@
-use fluent_bundle::{FluentArgs, FluentBundle, FluentResource, FluentValue};
-use fluent_syntax::ast;
+use fluent_bundle_for_carbide::{FluentArgs, FluentBundle, FluentResource, FluentValue};
+use fluent_syntax_for_carbide::ast;
 use icu::locid::{locale, Locale};
 
 const LANG_EN: Locale = locale!("en");

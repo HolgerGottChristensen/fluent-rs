@@ -1,5 +1,5 @@
 [package]
-name = "fluent-bundle"
+name = "fluent-bundle_for_carbide"
 description = """
 A localization system designed to unleash the entire expressive power of
 natural language translations.
@@ -26,11 +26,11 @@ include = [
 ]
 
 [dependencies]
-fluent-langneg.workspace = true
-fluent-syntax.workspace = true
+fluent-langneg_for_carbide.workspace = true
+fluent-syntax_for_carbide.workspace = true
 rustc-hash.workspace = true
 icu.workspace = true
-intl-memoizer = { path = "../intl-memoizer" }
+intl-memoizer_for_carbide = { path = "../intl-memoizer" }
 self_cell = "0.10"
 smallvec = "1"
 chrono = "0.4"

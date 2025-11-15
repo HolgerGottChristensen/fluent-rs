@@ -1,4 +1,4 @@
-use fluent_syntax::parser::parse_runtime;
+use fluent_syntax_for_carbide::parser::parse_runtime;
 
 fn iai_parse_ctx_runtime() {
     let files = &[

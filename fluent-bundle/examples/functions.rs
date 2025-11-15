@@ -1,4 +1,4 @@
-use fluent_bundle::{FluentBundle, FluentResource, FluentValue};
+use fluent_bundle_for_carbide::{FluentBundle, FluentResource, FluentValue};
 use icu::locid::locale;
 
 fn main() {

@@ -1,5 +1,5 @@
 use crate::types::FluentType;
-use intl_memoizer::Memoizable;
+use intl_memoizer_for_carbide::Memoizable;
 use icu::locid::Locale;
 
 /// This trait contains thread-safe methods which extend [intl_memoizer::IntlLangMemoizer].

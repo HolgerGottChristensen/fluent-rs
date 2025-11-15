@@ -1,5 +1,5 @@
 [package]
-name = "fluent-langneg"
+name = "fluent-langneg_for_carbide"
 description = """
 A library for language and locale negotiation.
 """

@@ -11,8 +11,8 @@ use std::collections::hash_map::Entry as HashEntry;
 use std::default::Default;
 use std::fmt;
 
-use fluent_syntax::ast;
-use intl_memoizer::IntlLangMemoizer;
+use fluent_syntax_for_carbide::ast;
+use intl_memoizer_for_carbide::IntlLangMemoizer;
 use icu::locid::Locale;
 
 use crate::args::FluentArgs;
@@ -644,7 +644,7 @@ impl crate::memoizer::MemoizerKind for IntlLangMemoizer {
     fn with_try_get_threadsafe<I, R, U>(&self, args: I::Args, cb: U) -> Result<R, I::Error>
     where
         Self: Sized,
-        I: intl_memoizer::Memoizable + Send + Sync + 'static,
+        I: intl_memoizer_for_carbide::Memoizable + Send + Sync + 'static,
         I::Args: Send + Sync + 'static,
         U: FnOnce(&I) -> R,
     {

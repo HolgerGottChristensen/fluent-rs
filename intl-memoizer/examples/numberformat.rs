@@ -1,4 +1,4 @@
-use intl_memoizer::{IntlMemoizer, Memoizable};
+use intl_memoizer_for_carbide::{IntlMemoizer, Memoizable};
 use icu::locid::Locale;
 
 #[derive(Clone, Hash, PartialEq, Eq)]

@@ -1,4 +1,4 @@
-use fluent_fallback::types::{ResourceType, ToResourceId};
+use fluent_fallback_for_carbide::types::{ResourceType, ToResourceId};
 
 use super::structs::*;
 use crate::queries;

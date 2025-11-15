@@ -1,5 +1,5 @@
 [package]
-name = "fluent-resmgr"
+name = "fluent-resmgr_for_carbide"
 description = """
 Resource manager for Fluent localization resources.
 """
@@ -17,8 +17,8 @@ keywords = ["localization", "l10n", "i18n", "intl", "internationalization"]
 categories = ["localization", "internationalization"]
 
 [dependencies]
-fluent-bundle.workspace = true
-fluent-fallback.workspace = true
+fluent-bundle_for_carbide.workspace = true
+fluent-fallback_for_carbide.workspace = true
 futures.workspace = true
 rustc-hash.workspace = true
 thiserror.workspace = true
@@ -26,5 +26,5 @@ icu.workspace = true
 elsa = "1.5"
 
 [dev-dependencies]
-fluent-langneg.workspace = true
+fluent-langneg_for_carbide.workspace = true
 icu.workspace = true

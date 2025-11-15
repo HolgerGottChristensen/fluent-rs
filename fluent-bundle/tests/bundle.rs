@@ -1,4 +1,4 @@
-use fluent_bundle::{FluentArgs, FluentBundle, FluentResource};
+use fluent_bundle_for_carbide::{FluentArgs, FluentBundle, FluentResource};
 use std::borrow::Cow;
 use icu::locid::locale;
 

@@ -17,9 +17,9 @@
 //!
 //! If the second argument is omitted, `en-US` locale is used as the
 //! default one.
-use fluent_bundle::{FluentArgs, FluentValue};
-use fluent_langneg::{negotiate_languages, NegotiationStrategy};
-use fluent_resmgr::resource_manager::ResourceManager;
+use fluent_bundle_for_carbide::{FluentArgs, FluentValue};
+use fluent_langneg_for_carbide::{negotiate_languages, NegotiationStrategy};
+use fluent_resmgr_for_carbide::resource_manager::ResourceManager;
 use std::env;
 use std::fs;
 use std::io;

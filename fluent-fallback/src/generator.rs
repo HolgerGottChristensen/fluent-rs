@@ -1,4 +1,4 @@
-use fluent_bundle::{FluentBundle, FluentError, FluentResource};
+use fluent_bundle_for_carbide::{FluentBundle, FluentError, FluentResource};
 use futures::Stream;
 use rustc_hash::FxHashSet;
 use std::borrow::Borrow;

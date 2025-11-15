@@ -8,8 +8,8 @@ use std::io;
 use std::io::Read;
 use std::rc::Rc;
 
-use fluent_bundle::{FluentArgs, FluentBundle, FluentResource, FluentValue};
-use fluent_syntax::ast;
+use fluent_bundle_for_carbide::{FluentArgs, FluentBundle, FluentResource, FluentValue};
+use fluent_syntax_for_carbide::ast;
 use icu::locid::locale;
 
 fn read_file(path: &str) -> Result<String, io::Error> {

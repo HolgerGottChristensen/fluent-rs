@@ -1,4 +1,4 @@
-use fluent_fallback::types::ResourceId;
+use fluent_fallback_for_carbide::types::ResourceId;
 
 pub struct FileSource {
     pub name: String,

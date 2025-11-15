@@ -1,4 +1,4 @@
-use fluent_testing::scenarios::get_scenarios;
+use fluent_testing_for_carbide::scenarios::get_scenarios;
 
 fn main() {
     for scenario in get_scenarios() {

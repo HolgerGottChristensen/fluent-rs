@@ -14,7 +14,7 @@
 //! cargo run --bin parser --features json -- ./fluent-syntax/tests/fixtures/literal_expressions.ftl
 //! ```
 
-use fluent_syntax::parser::parse;
+use fluent_syntax_for_carbide::parser::parse;
 use std::env;
 use std::fs::File;
 use std::io;

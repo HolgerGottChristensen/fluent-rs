@@ -3,7 +3,7 @@ use crate::memoizer::MemoizerKind;
 use crate::resolver::{ResolveValue, ResolverError, WriteValue};
 use crate::types::FluentValue;
 use crate::{FluentArgs, FluentError, FluentResource};
-use fluent_syntax::ast;
+use fluent_syntax_for_carbide::ast;
 use std::borrow::Borrow;
 use std::fmt;
 

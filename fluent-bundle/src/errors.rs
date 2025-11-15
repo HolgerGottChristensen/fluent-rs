@@ -1,5 +1,5 @@
 use crate::resolver::ResolverError;
-use fluent_syntax::parser::ParserError;
+use fluent_syntax_for_carbide::parser::ParserError;
 use std::error::Error;
 
 #[derive(Debug, PartialEq, Eq, Clone)]

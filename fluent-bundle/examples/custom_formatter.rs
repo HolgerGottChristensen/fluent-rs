@@ -4,9 +4,9 @@
 // This allows users to plug their own number formatter to Fluent.
 use icu::locid::Locale;
 
-use fluent_bundle::memoizer::MemoizerKind;
-use fluent_bundle::types::{FluentNumber, FluentNumberOptions};
-use fluent_bundle::{FluentArgs, FluentBundle, FluentResource, FluentValue};
+use fluent_bundle_for_carbide::memoizer::MemoizerKind;
+use fluent_bundle_for_carbide::types::{FluentNumber, FluentNumberOptions};
+use fluent_bundle_for_carbide::{FluentArgs, FluentBundle, FluentResource, FluentValue};
 
 fn custom_formatter<M: MemoizerKind>(num: &FluentValue, _intls: &M) -> Option<String> {
     match num {

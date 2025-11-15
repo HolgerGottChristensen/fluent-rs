@@ -1,11 +1,11 @@
-use fluent_bundle::resolver::Scope;
-use fluent_bundle::types::{
+use fluent_bundle_for_carbide::resolver::Scope;
+use fluent_bundle_for_carbide::types::{
     FluentNumber, FluentNumberCurrencyDisplayStyle, FluentNumberOptions, FluentNumberStyle,
 };
-use fluent_bundle::FluentArgs;
-use fluent_bundle::FluentBundle;
-use fluent_bundle::FluentResource;
-use fluent_bundle::FluentValue;
+use fluent_bundle_for_carbide::FluentArgs;
+use fluent_bundle_for_carbide::FluentBundle;
+use fluent_bundle_for_carbide::FluentResource;
+use fluent_bundle_for_carbide::FluentValue;
 use icu::locid::locale;
 
 #[test]

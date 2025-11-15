@@ -4,8 +4,8 @@ use super::{ResolveValue, ResolverError, WriteValue};
 use std::borrow::Borrow;
 use std::fmt;
 
-use fluent_syntax::ast;
-use fluent_syntax::unicode::{unescape_unicode, unescape_unicode_to_string};
+use fluent_syntax_for_carbide::ast;
+use fluent_syntax_for_carbide::unicode::{unescape_unicode, unescape_unicode_to_string};
 
 use crate::entry::GetEntry;
 use crate::memoizer::MemoizerKind;

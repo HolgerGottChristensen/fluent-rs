@@ -1,5 +1,5 @@
 [package]
-name = "fluent"
+name = "fluent_for_carbide"
 description = """
 A localization system designed to unleash the entire expressive power of
 natural language translations.
@@ -26,6 +26,6 @@ include = [
 ]
 
 [dependencies]
-fluent-bundle.workspace = true
-fluent-pseudo = { workspace = true, optional = true }
+fluent-bundle_for_carbide.workspace = true
+fluent-pseudo_for_carbide = { workspace = true, optional = true }
 icu.workspace = true

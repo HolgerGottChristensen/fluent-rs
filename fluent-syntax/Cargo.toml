@@ -1,5 +1,5 @@
 [package]
-name = "fluent-syntax"
+name = "fluent-syntax_for_carbide"
 description = """
 Parser/Serializer tools for Fluent Syntax. 
 """
