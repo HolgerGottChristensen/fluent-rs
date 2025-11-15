@@ -3,7 +3,7 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 use std::str::FromStr;
 use chrono::{Datelike, DateTime, FixedOffset, Timelike};
-use icu::calendar::{AnyCalendar, Date};
+use icu::calendar::{AnyCalendar, Calendar, Date, Gregorian};
 use icu::datetime::{DateFormatter, DateTimeFormatter, DateTimeFormatterOptions, TimeFormatter, ZonedDateTimeFormatter};
 use icu::datetime::input::{DateInput, IsoTimeInput};
 use icu::datetime::options::length;
@@ -96,7 +96,7 @@ impl Formatter {
             }
             (None, None, Some(timezone_style)) => {
                 let dtf = TimeZoneFormatter::try_new(&locale.into(), TimeZoneFormatterOptions::from(timezone_style))
-                    .expect("Failed to create TimeFormatter instance.");
+                    .expect("Failed to create TimeZoneFormatter instance.");
 
                 Some(Formatter::TimeZone(dtf))
             }
@@ -119,6 +119,7 @@ impl FluentDateTime {
             self.value.minute() as u8,
             self.value.second() as u8
         ).unwrap();
+
 
         let date = typed_date.to_iso().to_any();
         let time_zone = CustomTimeZone::from_str(&self.value.timezone().to_string()).unwrap();
@@ -170,26 +171,34 @@ impl FluentDateTime {
                     return formatter.format_string(&date, &time_zone).into();
                 }
 
-                let new_formatter = Formatter::new(locale, date_style, time_style, timezone_style).unwrap();
+                let new_formatter = Formatter::new(locale, date_style, time_style, timezone_style);
 
-                let res = new_formatter.format_string(&date, &time_zone).into();
+                if let Some(new_formatter) = new_formatter {
+                    let res = new_formatter.format_string(&date, &time_zone).into();
 
-                formatter_map.insert((self.options.date_style, self.options.time_style, self.options.timezone_style), new_formatter);
+                    formatter_map.insert((self.options.date_style, self.options.time_style, self.options.timezone_style), new_formatter);
 
-                return res;
+                    return res;
+                } else {
+                    return Cow::Owned(format!("No formatter available for the style configuration"));
+                }
             }
 
             let mut map = HashMap::new();
 
-            let new_formatter = Formatter::new(locale, date_style, time_style, timezone_style).unwrap();
+            let new_formatter = Formatter::new(locale, date_style, time_style, timezone_style);
 
-            let res = new_formatter.format_string(&date, &time_zone).into();
+            if let Some(new_formatter) = new_formatter {
+                let res = new_formatter.format_string(&date, &time_zone).into();
 
-            map.insert((self.options.date_style, self.options.time_style, self.options.timezone_style), new_formatter);
+                map.insert((self.options.date_style, self.options.time_style, self.options.timezone_style), new_formatter);
 
-            cell.borrow_mut().insert(locale.clone(), map);
+                cell.borrow_mut().insert(locale.clone(), map);
 
-            res
+                res
+            } else {
+                Cow::Owned(format!("No formatter available for the style configuration"))
+            }
         })
     }
 }
@@ -211,7 +220,7 @@ impl From<DateTime<FixedOffset>> for FluentDateTime {
 
 
 /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat#locale_options
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Default)]
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, Default)]
 pub struct FluentDateTimeOptions {
     pub date_style: FluentDateStyle,
     pub time_style: FluentTimeStyle,
